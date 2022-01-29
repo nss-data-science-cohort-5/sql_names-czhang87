@@ -45,7 +45,7 @@ FROM names;
 /*
 7. Are there more males or more females registered?
 */
-SELECT gender,COUNT(gender)
+SELECT gender,SUM(num_registered)
 FROM names
 GROUP BY gender;
 
@@ -114,26 +114,82 @@ GROUP BY name) AS unisex
 /*
 15. How many names have made an appearance in every single year since 1880?
 */
-
+SELECT COUNT(*)
+FROM(
+SELECT name, COUNT(DISTINCT year)
+FROM names
+GROUP BY name
+HAVING COUNT(DISTINCT year)>138
+) AS name_since_1880;
 
 /*
 16. How many names have only appeared in one year?
 */
+SELECT COUNT(*)
+FROM(
+SELECT name, COUNT(DISTINCT year)
+FROM names
+GROUP BY name
+HAVING COUNT(DISTINCT year)=1
+) AS name_since_1880;
 
 /*
 17. How many names only appeared in the 1950s?
 */
+SELECT
+	COUNT(distinct_name)
+FROM (
+	SELECT 
+		DISTINCT(name) as distinct_name,
+		MIN(year) AS min_year,
+		MAX(year) AS max_year
+	FROM NAMES
+	GROUP BY 1
+) AS start_year
+WHERE min_year BETWEEN 1950 AND 1959
+AND max_year BETWEEN 1950 AND 1959
+;
 
 /*
 18. How many names made their first appearance in the 2010s?
 */
+SELECT
+	COUNT(distinct_name)
+FROM (
+	SELECT 
+		DISTINCT(name) AS distinct_name,
+		MIN(year) AS min_year
+	FROM names
+	GROUP BY 1
+) AS start_year
+WHERE min_year between 2010 and 2019
 
 /*
 19. Find the names that have not be used in the longest.
 */
-
+SELECT
+	distinct_name,
+	MIN(max_year)
+FROM (
+	SELECT 
+		DISTINCT(name) as distinct_name,
+		MAX(year) as max_year
+	FROM names
+	GROUP BY 1
+) as start_year
+GROUP BY 1
+ORDER BY 2
+LIMIT 2
+;
 /*
 20. Come up with a question that you would like to answer using this dataset. Then write a query to answer this question.
 */
+
+
+
+
+
+
+
 
 
